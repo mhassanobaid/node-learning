@@ -1,0 +1,3 @@
+Writing to test.txt synchronously
+Word appended
+Word appended
