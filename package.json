@@ -5,7 +5,8 @@
   "main": "hello.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node hello"
+    "start": "node hello",
+    "start-server": "node Day5-http-server"
   },
   "author": "",
   "license": "ISC"
