@@ -17,7 +17,11 @@ const server = http.createServer((req, res)=>{
   // res.end("Welcome to the text on chrome");
 
   // console.log(parseUrl.pathname);
+  // query params me space = +
   const log = `Date:- ${new Date()} | Addr:- ${req.socket.remoteAddress} | Path:- ${req.url}\n`;
+
+  console.log(req.method);
+  
   fs.appendFile("logs.txt", log, (err)=>{
 
     if(err){
@@ -27,13 +31,21 @@ const server = http.createServer((req, res)=>{
 
       switch (parseUrl.pathname) {
         case "/":
-          res.end("Homepage");
-          break;
+          return res.end("Homepage");
         case "/about-us":
           const name=parseUrl.query.name;
-          res.end(`Hi wanna know about ${name}`);
+          return res.end(`Hi wanna know about ${name}`);
+        case "/signup":
+          if(req.method === "GET"){
+            return res.end(`Tbis is Signup request`);
+          } else if(req.method === "POST"){
+            // take data from req's body
+            // save it in db
+            return res.end("Successful signup");
+          }
+           return res.end("Method not allowed");
         default:
-          res.end(`403 not found`);
+          return res.end(`403 not found`);
       }
 
     }
