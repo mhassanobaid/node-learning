@@ -1,0 +1,28 @@
+// headers are additional info (meta data ) of request and response
+
+// we can see it in live after calling utube
+
+
+// we can add them in request as well as response
+// bur for respnse headers one BEST PRACTICE is to put X-headerName
+
+const express = require("express");
+const posts = require("./MOCK_POSTS.json");
+const app = express();
+const port = 8000;
+
+// this express.urlencoded and express.json both basically use headers to determine the request having headers of urlencoded or json and requests having such headers are parsed by either of below lines of express.urlencoded or express.json and we get req.body
+
+app.use(express.urlencoded({extended: false}));
+
+app.get("/api/posts", (req, res)=>{
+
+  res.setHeader("X-blog-post", "ali");
+
+  return res.json({status: "success", posts: posts});
+
+});
+
+app.listen(port, ()=>{
+  console.log(`Server started on ${port}`);
+});
