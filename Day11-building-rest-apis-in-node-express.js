@@ -52,13 +52,13 @@ app.route("/api/users/:id")
       const user = users.find( user=> user.id === id );
 
       if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found"
-      });
-    }
+        return res.status(404).json({
+          success: false,
+          message: "User not found"
+        });
+      }
 
-      return res.json(user);
+      return res.status(200).json(user);
     })
     // perferedd way is to use map for both FULL PUT as well as PARTIAL PATCH updates
   .put(
@@ -68,6 +68,20 @@ app.route("/api/users/:id")
 
       const id = Number(req.params.id);
       const body = req.body;
+
+      if(!body.first_name || !body.last_name || !body.email || !body.gender){
+        return res.status(400).json({err: "all fields must be present"});
+      }
+
+      const userEmailIndex = users.findIndex(user => user.email === body.email);
+
+      if(userEmailIndex > -1){
+        return res.status(409).json({ msg: "Conflict occurs" });
+      }
+
+      // 422 for validation fail
+
+      // 500 srever side error
 
       const userIndex = users.findIndex(user => user.id === id);
 
@@ -98,7 +112,7 @@ app.route("/api/users/:id")
             });
           }
 
-          return res.json({
+          return res.status(200).json({
             success: true,
             user: updatedUser
           });
@@ -145,7 +159,7 @@ app.route("/api/users/:id")
             });
           }
 
-          return res.json({
+          return res.status(299).json({
             success: true,
             user: users[userIndex]
           });
@@ -173,11 +187,11 @@ app.route("/api/users/:id")
                     console.log(err);
                     
                   }else{
-                    return res.json({success: true, id: id});
+                    return res.status(204).json({success: true, id: id});
                   }
                 });
               } else {
-                return res.json({success: true, id: id});
+                return res.status(404).json({success: true, id: id});
               }
 
                             // PREFERRED APPROAch of CREATING NEW ARRAY
@@ -222,7 +236,7 @@ app.get("/users", (req, res) => {
     </ul>
   `;
 
-  return res.send(html);
+  return res.status(200).send(html);
 });
 
 // mistake i made is writing array to file which is not possible only string, buffer, typedarray, dataview are written to file so SOLU is JSON.stringigfy
@@ -232,6 +246,20 @@ app.post("/api/users", (req, res)=>{
   const body = req.body;
 
   console.log(body);
+
+  if(!body.first_name || !body.last_name || !body.email || !body.gender){
+    return res.status(400).json({err: "all fields must be present"});
+  }
+
+  const userEmailIndex = users.findIndex(user => user.email === body.email);
+
+  if(userEmailIndex > -1){
+    return res.status(409).json({ msg: "Conflict occurs" });
+  }
+
+  // 422 for validation fail
+
+  // 500 srever side error
 
   users.push({ ...body, id: (users.length + 1) });
 
@@ -251,3 +279,24 @@ app.post("/api/users", (req, res)=>{
 app.listen(port, ()=>{
   console.log("Server started at "+ port);
 });
+
+// must know status codes
+//100- information
+//200- success
+//300- redirect
+// 400- client error
+// 500 - server error
+
+// MOSTLY USED
+
+// 200 ok
+// 201 created
+// 204 nothing toreturn
+// 400 BAd request means any field missing
+// 401 unauthenticated
+// 403 forbidden -> any permission nhn hee
+// 404 content not found -> any resouce or path not found
+// 409 conflict means any email coming is alreay present
+// 422 unprocessiable entity means validation failed
+// 500 internal server error
+// 503 service unavailable
