@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node hello",
-    "start-server": "node Day5-http-server"
+    "start-server": "node Day5-http-server",
+    "mvc-server": "nodemon server"
   },
   "author": "",
   "license": "ISC",
